@@ -6,7 +6,6 @@
     <title>Editar Usuário - Matrix</title>
     <link rel="stylesheet" href="">
     <style>
-        /* Estilo super básico só para organizar os campos em tela caso não tenha CSS ainda */
         body { font-family: Arial, sans-serif; padding: 20px; }
         .form-group { margin-bottom: 10px; }
         label { display: inline-block; width: 150px; font-weight: bold; }
@@ -81,9 +80,8 @@
 </form>
 
 <script>
-    // 1. Configurações Iniciais
     const urlParams = new URLSearchParams(window.location.search);
-    const cpfDoUsuario = urlParams.get('cpf'); // Pega o CPF da URL (ex: edit.html?cpf=123)
+    const cpfDoUsuario = urlParams.get('cpf');
 
     const credenciais = btoa('jf@matrix.com:224488');
     const headersConfig = {
@@ -91,7 +89,6 @@
         'Authorization': `Basic ${credenciais}`
     };
 
-    // 2. FUNÇÃO QUE RODA AO ABRIR A PÁGINA (Preenche os dados antigos)
     window.onload = function() {
         if (!cpfDoUsuario) {
             alert("Erro: Nenhum CPF encontrado na URL para edição!");
@@ -104,14 +101,12 @@
                 return response.json();
             })
             .then(dados => {
-                // Preenche Dados Pessoais
                 document.getElementById('inputNome').value = dados.nome || '';
                 document.getElementById('inputRg').value = dados.rg || '';
                 document.getElementById('inputDataNascimento').value = dados.dataNascimento || '';
                 document.getElementById('inputGenero').value = dados.genero || '';
                 document.getElementById('inputCelular').value = dados.celular || '';
 
-                // Preenche Endereço (se existir)
                 if (dados.endereco) {
                     document.getElementById('inputCep').value = dados.endereco.cep || '';
                     document.getElementById('inputLogradouro').value = dados.endereco.logradouro || '';
@@ -128,11 +123,9 @@
             });
     };
 
-    // 3. FUNÇÃO DE ATUALIZAR (PATCH)
     function atualizarUsuario() {
         if (!cpfDoUsuario) return;
 
-        // Monta o objeto gigante pegando os valores digitados agora
         const dadosAtualizados = {
             nome: document.getElementById('inputNome').value,
             rg: document.getElementById('inputRg').value,
@@ -158,7 +151,7 @@
             .then(response => {
                 if (response.ok) {
                     alert("Usuário atualizado com sucesso!");
-                    window.location.href = "/users.html"; // Redireciona para a lista
+                    window.location.href = "/users.html";
                 } else {
                     alert("Falha ao atualizar os dados. Verifique os campos.");
                 }
@@ -166,7 +159,6 @@
             .catch(error => console.error("Erro:", error));
     }
 
-    // 4. FUNÇÃO DE DELETAR (DELETE)
     function deletarUsuario() {
         if (!cpfDoUsuario) return;
 
