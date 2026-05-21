@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuário - Matrix</title>
+    <link rel="stylesheet" href="">
+    <style>
+        /* Estilo super básico só para organizar os campos em tela caso não tenha CSS ainda */
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 10px; }
+        label { display: inline-block; width: 150px; font-weight: bold; }
+        input { padding: 5px; width: 250px; }
+        .btn { padding: 10px 15px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-salvar { background-color: #28a745; color: white; }
+        .btn-excluir { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+
+<h2>Editar Dados do Usuário</h2>
+
+<form id="formEdicao">
+    <h3>Dados Pessoais</h3>
+    <div class="form-group">
+        <label>Nome:</label>
+        <input type="text" id="inputNome" placeholder="Nome completo">
+    </div>
+    <div class="form-group">
+        <label>RG:</label>
+        <input type="text" id="inputRg" placeholder="Apenas números">
+    </div>
+    <div class="form-group">
+        <label>Data de Nascimento:</label>
+        <input type="date" id="inputDataNascimento">
+    </div>
+    <div class="form-group">
+        <label>Gênero:</label>
+        <input type="text" id="inputGenero" placeholder="Masculino / Feminino">
+    </div>
+    <div class="form-group">
+        <label>Celular:</label>
+        <input type="text" id="inputCelular" placeholder="Apenas números">
+    </div>
+
+    <hr>
+
+    <h3>Endereço</h3>
+    <div class="form-group">
+        <label>CEP:</label>
+        <input type="text" id="inputCep">
+    </div>
+    <div class="form-group">
+        <label>Logradouro:</label>
+        <input type="text" id="inputLogradouro" placeholder="Rua, Avenida...">
+    </div>
+    <div class="form-group">
+        <label>Número:</label>
+        <input type="text" id="inputNumero">
+    </div>
+    <div class="form-group">
+        <label>Bairro:</label>
+        <input type="text" id="inputBairro">
+    </div>
+    <div class="form-group">
+        <label>Município:</label>
+        <input type="text" id="inputMunicipio">
+    </div>
+    <div class="form-group">
+        <label>Estado (UF):</label>
+        <input type="text" id="inputEstado" maxlength="2" placeholder="Ex: SP">
+    </div>
+    <div class="form-group">
+        <label>Complemento:</label>
+        <input type="text" id="inputComplemento" placeholder="Apto, Bloco, etc.">
+    </div>
+
+    <br>
+    <button type="button" class="btn btn-salvar" onclick="atualizarUsuario()">Salvar Alterações</button>
+    <button type="button" class="btn btn-excluir" onclick="deletarUsuario()">Excluir Usuário</button>
+</form>
+
+<script>
+    // 1. Configurações Iniciais
+    const urlParams = new URLSearchParams(window.location.search);
+    const cpfDoUsuario = urlParams.get('cpf'); // Pega o CPF da URL (ex: edit.html?cpf=123)
+
+    const credenciais = btoa('jf@matrix.com:224488');
+    const headersConfig = {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${credenciais}`
+    };
+
+    // 2. FUNÇÃO QUE RODA AO ABRIR A PÁGINA (Preenche os dados antigos)
+    window.onload = function() {
+        if (!cpfDoUsuario) {
+            alert("Erro: Nenhum CPF encontrado na URL para edição!");
+            return;
+        }
+
+        fetch(`/api/usuarios/${cpfDoUsuario}`, { headers: headersConfig })
+            .then(response => {
+                if(!response.ok) throw new Error("Usuário não encontrado");
+                return response.json();
+            })
+            .then(dados => {
+                // Preenche Dados Pessoais
+                document.getElementById('inputNome').value = dados.nome || '';
+                document.getElementById('inputRg').value = dados.rg || '';
+                document.getElementById('inputDataNascimento').value = dados.dataNascimento || '';
+                document.getElementById('inputGenero').value = dados.genero || '';
+                document.getElementById('inputCelular').value = dados.celular || '';
+
+                // Preenche Endereço (se existir)
+                if (dados.endereco) {
+                    document.getElementById('inputCep').value = dados.endereco.cep || '';
+                    document.getElementById('inputLogradouro').value = dados.endereco.logradouro || '';
+                    document.getElementById('inputNumero').value = dados.endereco.numero || '';
+                    document.getElementById('inputBairro').value = dados.endereco.bairro || '';
+                    document.getElementById('inputMunicipio').value = dados.endereco.municipio || '';
+                    document.getElementById('inputEstado').value = dados.endereco.estado || '';
+                    document.getElementById('inputComplemento').value = dados.endereco.complemento || '';
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao carregar dados:", error);
+                alert("Erro ao buscar os dados do usuário.");
+            });
+    };
+
+    // 3. FUNÇÃO DE ATUALIZAR (PATCH)
+    function atualizarUsuario() {
+        if (!cpfDoUsuario) return;
+
+        // Monta o objeto gigante pegando os valores digitados agora
+        const dadosAtualizados = {
+            nome: document.getElementById('inputNome').value,
+            rg: document.getElementById('inputRg').value,
+            dataNascimento: document.getElementById('inputDataNascimento').value,
+            genero: document.getElementById('inputGenero').value,
+            celular: document.getElementById('inputCelular').value,
+            endereco: {
+                cep: document.getElementById('inputCep').value,
+                logradouro: document.getElementById('inputLogradouro').value,
+                numero: document.getElementById('inputNumero').value,
+                bairro: document.getElementById('inputBairro').value,
+                municipio: document.getElementById('inputMunicipio').value,
+                estado: document.getElementById('inputEstado').value,
+                complemento: document.getElementById('inputComplemento').value
+            }
+        };
+
+        fetch(`/api/usuarios/${cpfDoUsuario}`, {
+            method: 'PATCH',
+            headers: headersConfig,
+            body: JSON.stringify(dadosAtualizados)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Usuário atualizado com sucesso!");
+                    window.location.href = "/users.html"; // Redireciona para a lista
+                } else {
+                    alert("Falha ao atualizar os dados. Verifique os campos.");
+                }
+            })
+            .catch(error => console.error("Erro:", error));
+    }
+
+    // 4. FUNÇÃO DE DELETAR (DELETE)
+    function deletarUsuario() {
+        if (!cpfDoUsuario) return;
+
+        if (confirm("Alerta Vermelho! Tem certeza que deseja deletar este usuário permanentemente?")) {
+            fetch(`/api/usuarios/${cpfDoUsuario}`, {
+                method: 'DELETE',
+                headers: headersConfig
+            })
+                .then(response => {
+                    if (response.status === 204) {
+                        alert("Usuário deletado da Matrix!");
+                        window.location.href = "/users.html";
+                    } else {
+                        alert("Erro ao deletar usuário.");
+                    }
+                })
+                .catch(error => console.error("Erro:", error));
+        }
+    }
+</script>
+</body>
+</html>
