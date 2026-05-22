@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuários - Matrix</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        .wrapper.users-wrapper {
+            width: 90% !important;
+            max-width: 1000px !important;
+            margin-top: 120px;
+            padding: 30px;
+        }
+
+        .form-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 143, 17, 0.5);
+        }
+
+        th {
+            color: #00ff22;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: rgba(0, 143, 17, 0.2);
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            background: transparent;
+            border: 1px solid #008F11;
+            color: #00ff22;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-action:hover {
+            background: #008F11;
+            color: #000;
+            box-shadow: 0 0 10px #00ff22;
+        }
+    </style>
+</head>
+
+<body>
+
+<video autoplay muted loop playsinline id="matrix-video">
+    <source src="matrix-fundo.mp4" type="video/mp4">
+</video>
+
+<div class="main-page-content">
+    <header>
+        <img class="logo" src="imgs/carro-matrix.png" alt="Locadora Matrix">
+        <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">Módulos</a>
+            <a href="#">Suporte</a>
+            <a href="#">Perfil</a>
+            <button class="btnLogin-popup" onclick="fazerLogout()">Sair</button>
+        </nav>
+    </header>
+
+    <div class="wrapper users-wrapper">
+        <div class="form-box">
+            <h2>Registros da Matrix</h2>
+
+            <div class="table-container">
+                <table id="tabelaUsuarios">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>E-mail</th>
+                        <th>Celular</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+<script>
+    const credenciais = localStorage.getItem('matrix_auth');
+
+    if (!credenciais) {
+        alert("Acesso restrito! Por favor, faça login para visualizar os registros.");
+        window.location.href = "login.html";
+    }
+
+    window.onload = function() {
+        carregarUsuarios();
+    };
+
+    function carregarUsuarios() {
+        fetch('/api/usuarios', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Basic ${credenciais}`
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    alert("Sua sessão expirou ou suas credenciais são inválidas.");
+                    fazerLogout();
+                    throw new Error("Não autorizado");
+                }
+                if (!response.ok) throw new Error("Erro ao buscar dados da API");
+
+                return response.json();
+            })
+            .then(usuarios => {
+                const tbody = document.querySelector('#tabelaUsuarios tbody');
+                tbody.innerHTML = '';
+
+                usuarios.forEach(user => {
+                    const tr = document.createElement('tr');
+
+                    tr.innerHTML = `
+                    <td>${user.nome}</td>
+                    <td>${user.cpf}</td>
+                    <td>${user.email}</td>
+                    <td>${user.celular || 'Não informado'}</td>
+                    <td>
+                        <button class="btn-action" onclick="window.location.href='edit.html?cpf=${user.cpf}'">Editar</button>
+                    </td>
+                `;
+
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => console.error("Erro no carregamento:", error));
+    }
+
+    function fazerLogout() {
+        localStorage.removeItem('matrix_auth');
+        window.location.href = "login.html";
+    }
+</script>
+</body>
+</html>

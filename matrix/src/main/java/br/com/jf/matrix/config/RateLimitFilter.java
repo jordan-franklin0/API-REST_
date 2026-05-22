@@ -19,6 +19,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private final Bucket bucket;
 
     public RateLimitFilter() {
+        // Regra: Máximo de 5 requisições por minuto na API
         Bandwidth limit = Bandwidth.builder()
                 .capacity(5)
                 .refillGreedy(5, Duration.ofMinutes(1))
@@ -30,7 +31,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs");
+
+        return !path.startsWith("/api/");
     }
 
     @Override

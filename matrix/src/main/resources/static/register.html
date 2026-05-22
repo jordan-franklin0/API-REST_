@@ -7,82 +7,196 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Matrix</title>
     <link rel="stylesheet" href="main.css">
+    <style>
+        input[type="date"] ~ label {
+            display: none;
+        }
+        .form-box.register {
+            overflow-y: auto;
+            max-height: 85vh;
+            padding-right: 15px;
+        }
+        h3 {
+            color: #008F11;
+            margin: 20px 0 10px;
+            font-size: 1.2em;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+    </style>
 </head>
 
 <body>
 
-<header>
-    <img class="logo" src="imgs/carro-matrix.png" alt="Locadora Matrix">
-    <nav class="navigation">
-        <a href="#">Home</a>
-        <a href="#">Módulos</a>
-        <a href="#">Suporte</a>
-        <a href="#">Perfil</a>
-        <button class="btnLogin-popup">Login</button>
-    </nav>
-</header>
+<video autoplay muted loop playsinline id="matrix-video">
+    <source src="imgs/matrix-fundo.mp4" type="video/mp4">
+</video>
 
-<div class="wrapper">
-    <div class="form-box register">
-        <h2>Cadastro</h2>
-        <form action="register02.html">
-            <div class="input-box">
-                <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
-                <input type="text" required>
-                <label>Nome</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="calendar-outline"></ion-icon></span>
-                <input type="text" required>
-                <label>Data de nascimento</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="card-outline"></ion-icon></span>
-                <input type="text" required>
-                <label>CPF</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="transgender-outline"></ion-icon></span>
-                <input type="text" required>
-                <label>Gênero</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="id-card-outline"></ion-icon></span>
-                <input type="text" required>
-                <label>RG</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
-                <input type="email" required>
-                <label>E-mail</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
-                <input type="password" required>
-                <label>Senha</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
-                <input type="password" required>
-                <label>Confirmação de senha</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
-                <input type="tel" required>
-                <label>Celular</label>
-            </div>
-            <button type="submit" class="btn">Cadastrar</button>
-            <div class="login-register">
-                <p>Já tem uma conta? <a href="login.html" class="login-link">Login</a></p>
-            </div>
-        </form>
+<div class="main-page-content">
+    <header>
+        <img class="logo" src="imgs/carro-matrix.png" alt="Locadora Matrix">
+        <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">Módulos</a>
+            <a href="#">Suporte</a>
+            <a href="#">Perfil</a>
+            <button class="btnLogin-popup" onclick="window.location.href='login.html'">Login</button>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        <div class="form-box register">
+            <h2>Cadastro Completo</h2>
+
+            <form id="formCadastro">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                    <input type="text" id="inputNome" required>
+                    <label>Nome</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="calendar-outline"></ion-icon></span>
+                    <input type="date" id="inputData" required>
+                    <label>Data de nascimento</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="card-outline"></ion-icon></span>
+                    <input type="text" id="inputCpf" required>
+                    <label>CPF</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="transgender-outline"></ion-icon></span>
+                    <input type="text" id="inputGenero" required>
+                    <label>Gênero</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="id-card-outline"></ion-icon></span>
+                    <input type="text" id="inputRg" required>
+                    <label>RG</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <input type="email" id="inputEmail" required>
+                    <label>E-mail</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                    <input type="password" id="inputSenha" required minlength="6">
+                    <label>Senha</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                    <input type="password" id="inputConfirmacao" required minlength="6">
+                    <label>Confirmação de senha</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
+                    <input type="tel" id="inputCelular" required>
+                    <label>Celular</label>
+                </div>
+
+                <h3>Endereço</h3>
+
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="map-outline"></ion-icon></span>
+                    <input type="text" id="inputCep" required>
+                    <label>CEP</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="location-outline"></ion-icon></span>
+                    <input type="text" id="inputLogradouro" required>
+                    <label>Logradouro</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="pin-outline"></ion-icon></span>
+                    <input type="text" id="inputNumero" required>
+                    <label>Número</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="business-outline"></ion-icon></span>
+                    <input type="text" id="inputBairro" required>
+                    <label>Bairro</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="location-outline"></ion-icon></span>
+                    <input type="text" id="inputMunicipio" required>
+                    <label>Município</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="map-outline"></ion-icon></span>
+                    <input type="text" id="inputEstado" required maxlength="2">
+                    <label>Estado (UF)</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="information-circle-outline"></ion-icon></span>
+                    <input type="text" id="inputComplemento" required>
+                    <label>Complemento</label>
+                </div>
+
+                <button type="submit" class="btn">Cadastrar Conta e Endereço</button>
+
+                <div class="login-register" style="margin-top: 15px;">
+                    <p>Já tem uma conta? <a href="login.html" class="login-link">Login</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-
-<script src="script.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-</body>
 
+<script>
+    document.getElementById('formCadastro').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const senha = document.getElementById('inputSenha').value;
+        const confirmacao = document.getElementById('inputConfirmacao').value;
+
+        if (senha !== confirmacao) {
+            alert("As senhas não coincidem!");
+            return;
+        }
+
+        const novoUsuario = {
+            nome: document.getElementById('inputNome').value,
+            dataNascimento: document.getElementById('inputData').value,
+            cpf: document.getElementById('inputCpf').value,
+            genero: document.getElementById('inputGenero').value,
+            rg: document.getElementById('inputRg').value,
+            email: document.getElementById('inputEmail').value,
+            senha: senha,
+            celular: document.getElementById('inputCelular').value,
+            endereco: {
+                cep: document.getElementById('inputCep').value,
+                logradouro: document.getElementById('inputLogradouro').value,
+                numero: document.getElementById('inputNumero').value,
+                bairro: document.getElementById('inputBairro').value,
+                municipio: document.getElementById('inputMunicipio').value,
+                estado: document.getElementById('inputEstado').value,
+                complemento: document.getElementById('inputComplemento').value
+            }
+        };
+
+        fetch('/api/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(novoUsuario)
+        })
+            .then(async response => {
+                if (response.status === 201) {
+                    alert("Usuário e Endereço cadastrados com sucesso na Matrix!");
+                    window.location.href = "login.html";
+                } else {
+                    const erro = await response.text();
+                    console.error(erro);
+                    alert("Erro ao cadastrar. Verifique os dados inseridos.");
+                }
+            })
+            .catch(error => console.error("Erro fatal:", error));
+    });
+</script>
+</body>
 </html>

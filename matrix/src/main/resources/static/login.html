@@ -11,47 +11,86 @@
 
 <body>
 
-<header>
-    <img class="logo" src="imgs/carro-matrix.png" alt="Locadora Matrix">
-    <nav class="navigation">
-        <a href="#">Home</a>
-        <a href="#">Módulos</a>
-        <a href="#">Suporte</a>
-        <a href="#">Perfil</a>
-        <button class="btnLogin-popup">Login</button>
-    </nav>
-</header>
+<video autoplay muted loop playsinline id="matrix-video">
+    <source src="imgs/matrix-fundo.mp4" type="video/mp4">
+</video>
 
-<div class="wrapper">
-    <div class="form-box login">
-        <h2>Login</h2>
-        <form action="#">
-            <div class="input-box">
-                <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                <input type="email" required>
-                <label>Email</label>
-            </div>
-            <div class="input-box">
-                <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                <input type="password" required>
-                <label>Senha</label>
-            </div>
-            <div class="remember-forgot">
-                <label><input type="checkbox">Lembrar usuário</label>
-                <a href="recuperarAcesso.html">Esqueceu sua senha?</a>
-            </div>
-            <button type="submit" class="btn">Login</button>
-            <div class="login-register">
-                <p>Não tem uma conta? <a href="register.html" class="register-link">Registrar</a></p>
-            </div>
-        </form>
+<div class="main-page-content">
+    <header>
+        <img class="logo" src="imgs/carro-matrix.png" alt="Locadora Matrix">
+        <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">Módulos</a>
+            <a href="#">Suporte</a>
+            <a href="#">Perfil</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        <div class="form-box login">
+            <h2>Login</h2>
+
+            <form id="formLogin">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="email" id="inputEmail" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" id="inputSenha" required>
+                    <label>Senha</label>
+                </div>
+                <div class="remember-forgot">
+                    <label><input type="checkbox">Lembrar usuário</label>
+                    <a href="#">Esqueceu sua senha?</a>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="login-register">
+                    <p>Não tem uma conta? <a href="register.html" class="register-link">Registrar</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-
-<script src="script.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-</body>
 
+<script>
+    document.getElementById('formLogin').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('inputEmail').value;
+        const senha = document.getElementById('inputSenha').value;
+
+        const credenciais = btoa(email + ':' + senha);
+
+        fetch('/api/usuarios', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Basic ${credenciais}`
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.setItem('matrix_auth', credenciais);
+
+                    alert("Acesso liberado. Bem-vindo de volta à Matrix!");
+                    window.location.href = "users.html";
+
+                } else if (response.status === 401) {
+                    alert("Acesso Negado! E-mail ou senha incorretos.");
+                } else if (response.status === 429) {
+                    alert("Muitas tentativas! O segurança da Matrix bloqueou você. Aguarde 1 minuto.");
+                } else {
+                    alert("Erro ao tentar conectar com a API.");
+                }
+            })
+            .catch(error => console.error("Erro fatal:", error));
+    });
+</script>
+
+</body>
 </html>

@@ -4,86 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Usuário - Matrix</title>
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="main.css">
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .form-group { margin-bottom: 10px; }
-        label { display: inline-block; width: 150px; font-weight: bold; }
-        input { padding: 5px; width: 250px; }
-        .btn { padding: 10px 15px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-salvar { background-color: #28a745; color: white; }
-        .btn-excluir { background-color: #dc3545; color: white; }
+        input[type="date"] ~ label {
+            display: none;
+        }
+        .form-box.register {
+            overflow-y: auto;
+            max-height: 85vh;
+            padding-right: 15px;
+        }
+        h3 {
+            color: #008F11;
+            margin: 20px 0 10px;
+            font-size: 1.2em;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+        .btn-excluir {
+            background: #8b0000;
+            border: 1px solid #ff0000;
+            margin-top: 15px;
+            color: #fff;
+        }
+        .btn-excluir:hover {
+            background: #ff0000;
+            box-shadow: 0 0 15px #ff0000;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
 
-<h2>Editar Dados do Usuário</h2>
+<video autoplay muted loop playsinline id="matrix-video">
+    <source src="imgs/matrix-fundo.mp4" type="video/mp4">
+</video>
 
-<form id="formEdicao">
-    <h3>Dados Pessoais</h3>
-    <div class="form-group">
-        <label>Nome:</label>
-        <input type="text" id="inputNome" placeholder="Nome completo">
-    </div>
-    <div class="form-group">
-        <label>RG:</label>
-        <input type="text" id="inputRg" placeholder="Apenas números">
-    </div>
-    <div class="form-group">
-        <label>Data de Nascimento:</label>
-        <input type="date" id="inputDataNascimento">
-    </div>
-    <div class="form-group">
-        <label>Gênero:</label>
-        <input type="text" id="inputGenero" placeholder="Masculino / Feminino">
-    </div>
-    <div class="form-group">
-        <label>Celular:</label>
-        <input type="text" id="inputCelular" placeholder="Apenas números">
-    </div>
+<div class="main-page-content">
+    <header>
+        <img class="logo" src="imgs/carro-matrix.png" alt="Locadora Matrix">
+        <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">Módulos</a>
+            <a href="#">Suporte</a>
+            <a href="#">Perfil</a>
+            <button class="btnLogin-popup" onclick="window.location.href='login.html'">Sair</button>
+        </nav>
+    </header>
 
-    <hr>
+    <div class="wrapper">
+        <div class="form-box register">
+            <h2>Editar Usuário</h2>
 
-    <h3>Endereço</h3>
-    <div class="form-group">
-        <label>CEP:</label>
-        <input type="text" id="inputCep">
-    </div>
-    <div class="form-group">
-        <label>Logradouro:</label>
-        <input type="text" id="inputLogradouro" placeholder="Rua, Avenida...">
-    </div>
-    <div class="form-group">
-        <label>Número:</label>
-        <input type="text" id="inputNumero">
-    </div>
-    <div class="form-group">
-        <label>Bairro:</label>
-        <input type="text" id="inputBairro">
-    </div>
-    <div class="form-group">
-        <label>Município:</label>
-        <input type="text" id="inputMunicipio">
-    </div>
-    <div class="form-group">
-        <label>Estado (UF):</label>
-        <input type="text" id="inputEstado" maxlength="2" placeholder="Ex: SP">
-    </div>
-    <div class="form-group">
-        <label>Complemento:</label>
-        <input type="text" id="inputComplemento" placeholder="Apto, Bloco, etc.">
-    </div>
+            <form id="formEdicao">
+                <h3>Dados Pessoais</h3>
 
-    <br>
-    <button type="button" class="btn btn-salvar" onclick="atualizarUsuario()">Salvar Alterações</button>
-    <button type="button" class="btn btn-excluir" onclick="deletarUsuario()">Excluir Usuário</button>
-</form>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                    <input type="text" id="inputNome" required>
+                    <label>Nome</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="id-card-outline"></ion-icon></span>
+                    <input type="text" id="inputRg" required>
+                    <label>RG</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="calendar-outline"></ion-icon></span>
+                    <input type="date" id="inputDataNascimento" required>
+                    <label>Data de Nascimento</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="transgender-outline"></ion-icon></span>
+                    <input type="text" id="inputGenero" required>
+                    <label>Gênero</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
+                    <input type="tel" id="inputCelular" required>
+                    <label>Celular</label>
+                </div>
+
+                <h3>Endereço</h3>
+
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="map-outline"></ion-icon></span>
+                    <input type="text" id="inputCep" required>
+                    <label>CEP</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="location-outline"></ion-icon></span>
+                    <input type="text" id="inputLogradouro" required>
+                    <label>Logradouro</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="pin-outline"></ion-icon></span>
+                    <input type="text" id="inputNumero" required>
+                    <label>Número</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="business-outline"></ion-icon></span>
+                    <input type="text" id="inputBairro" required>
+                    <label>Bairro</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="location-outline"></ion-icon></span>
+                    <input type="text" id="inputMunicipio" required>
+                    <label>Município</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="map-outline"></ion-icon></span>
+                    <input type="text" id="inputEstado" maxlength="2" required>
+                    <label>Estado (UF)</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="information-circle-outline"></ion-icon></span>
+                    <input type="text" id="inputComplemento" required>
+                    <label>Complemento</label>
+                </div>
+
+                <button type="button" class="btn" onclick="atualizarUsuario()">Salvar Alterações</button>
+                <button type="button" class="btn btn-excluir" onclick="deletarUsuario()">Excluir Usuário</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const cpfDoUsuario = urlParams.get('cpf');
 
-    const credenciais = btoa('jf@matrix.com:224488');
+    const credenciais = localStorage.getItem('matrix_auth');
+
+    if (!credenciais) {
+        alert("Acesso negado! Você precisa fazer login primeiro.");
+        window.location.href = "login.html";
+    }
+
     const headersConfig = {
         'Content-Type': 'application/json',
         'Authorization': `Basic ${credenciais}`
@@ -97,7 +157,7 @@
 
         fetch(`/api/usuarios/${cpfDoUsuario}`, { headers: headersConfig })
             .then(response => {
-                if(!response.ok) throw new Error("Usuário não encontrado");
+                if(!response.ok) throw new Error("Usuário não encontrado ou sem permissão.");
                 return response.json();
             })
             .then(dados => {
@@ -119,9 +179,10 @@
             })
             .catch(error => {
                 console.error("Erro ao carregar dados:", error);
-                alert("Erro ao buscar os dados do usuário.");
+                alert("Erro ao buscar os dados. Verifique se o login expirou.");
             });
     };
+
 
     function atualizarUsuario() {
         if (!cpfDoUsuario) return;
@@ -150,8 +211,8 @@
         })
             .then(response => {
                 if (response.ok) {
-                    alert("Usuário atualizado com sucesso!");
-                    window.location.href = "/users.html";
+                    alert("Usuário atualizado com sucesso na Matrix!");
+                    window.location.href = "users.html";
                 } else {
                     alert("Falha ao atualizar os dados. Verifique os campos.");
                 }
@@ -170,7 +231,7 @@
                 .then(response => {
                     if (response.status === 204) {
                         alert("Usuário deletado da Matrix!");
-                        window.location.href = "/users.html";
+                        window.location.href = "users.html";
                     } else {
                         alert("Erro ao deletar usuário.");
                     }
