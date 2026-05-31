@@ -77,13 +77,13 @@
                 if (response.ok) {
                     localStorage.setItem('matrix_auth', credenciais);
 
-                    alert("Acesso liberado. Bem-vindo de volta à Matrix!");
+                    alert("Acesso liberado. Bem-vindo à Matrix!");
                     window.location.href = "users.html";
 
                 } else if (response.status === 401) {
                     alert("Acesso Negado! E-mail ou senha incorretos.");
                 } else if (response.status === 429) {
-                    alert("Muitas tentativas! O segurança da Matrix bloqueou você. Aguarde 1 minuto.");
+                    alert("Muitas tentativas! O Agente Smith bloqueou você. Aguarde 1 minuto.");
                 } else {
                     alert("Erro ao tentar conectar com a API.");
                 }
