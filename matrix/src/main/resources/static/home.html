@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Veículos - Matrix Rental</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+<video autoplay muted loop playsinline id="matrix-video">
+    <source src="imgs/matrix-fundo.mp4" type="video/mp4">
+</video>
+
+<div class="main-page-content" style="width: 100%;">
+    <header>
+        <img class="logo" src="imgs/carro-matrix.png" alt="Locadora Matrix">
+        <nav class="navigation">
+            <a href="home.html" style="color: #00ff22; font-weight: 700;">Home</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="users.html">Usuários</a>
+            <a href="#" onclick="alert('Suporte Matrix: Conectando com o Operador...')">Suporte</a>
+            <button id="navAuthBtn" class="btnLogin-popup" onclick="handleAuthNav()">Login</button>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <!-- Hero Banner -->
+        <section class="hero-section">
+            <h1 class="hero-title">Frota Matrix &bull; Catálogo de Veículos</h1>
+            <p class="hero-subtitle">Escolha a sua pílula sobre rodas: superesportivos, SUVs de alta performance e blindados autônomos da realidade simulada.</p>
+            
+            <div class="catalog-controls">
+                <div class="search-bar-container">
+                    <input type="text" id="searchInput" placeholder="Buscar por modelo, categoria ou especificação..." oninput="filtrarVeiculos()">
+                    <ion-icon name="search-outline" class="search-icon"></ion-icon>
+                </div>
+
+                <div class="filter-categories" id="filterCategories">
+                    <button class="filter-btn active" onclick="setCategory('Todos', this)">
+                        <ion-icon name="grid-outline"></ion-icon> Todos
+                    </button>
+                    <button class="filter-btn" onclick="setCategory('Esportivos', this)">
+                        <ion-icon name="flash-outline"></ion-icon> Esportivos
+                    </button>
+                    <button class="filter-btn" onclick="setCategory('SUVs', this)">
+                        <ion-icon name="car-sport-outline"></ion-icon> SUVs
+                    </button>
+                    <button class="filter-btn" onclick="setCategory('Elétricos', this)">
+                        <ion-icon name="leaf-outline"></ion-icon> Elétricos
+                    </button>
+                    <button class="filter-btn" onclick="setCategory('Blindados', this)">
+                        <ion-icon name="shield-checkmark-outline"></ion-icon> Blindados
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalog Grid -->
+        <section id="catalogo" style="width: 100%;">
+            <div class="catalog-grid" id="catalogGrid">
+                <!-- Vehicle Cards standard insertion via Javascript -->
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal Detalhes & Reserva -->
+<div class="modal-overlay" id="vehicleModal">
+    <div class="modal-container">
+        <button class="modal-close" onclick="fecharModal()">&times;</button>
+        <div class="modal-body" id="modalBody">
+            <!-- Modal Content Injected JS -->
+        </div>
+    </div>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+<script>
+    // Lista de Veículos do Catálogo Matrix
+    const veiculos = [
+        {
+            id: 1,
+            nome: "Nebuchadnezzar GT",
+            subtitulo: "Hypercar Autônomo com Modo Stealth",
+            categoria: "Esportivos",
+            imagem: "imgs/carro-nebuchadnezzar.png",
+            diaria: 850,
+            potencia: "1200 CV",
+            aceleracao: "0-100 km/h em 1.9s",
+            combustivel: "Matriz Quântica (Elétrico)",
+            passageiros: "2 Lugares",
+            descricao: "Superesportivo de alta performance projetado para aceleração extrema e evasão de sentinelas na realidade simulada. Possui propulsão quântica, controle aerodinâmico ativo e blindagem de fibra de carbono ativada por código."
+        },
+        {
+            id: 2,
+            nome: "Sentinel Force SUV",
+            subtitulo: "SUV Blindado de Combate Urbano",
+            categoria: "SUVs",
+            imagem: "imgs/carro-sentinel.png",
+            diaria: 620,
+            potencia: "850 CV",
+            aceleracao: "0-100 km/h em 3.4s",
+            combustivel: "Híbrido Quântico",
+            passageiros: "7 Lugares",
+            descricao: "O veículo definitivo para missões pesadas e transporte seguro de tripulação. Capacidade para até 7 passageiros, geradores EMP anti-interferência e piloto automático assistido por inteligência preditiva."
+        },
+        {
+            id: 3,
+            nome: "Oracle EV Sedan",
+            subtitulo: "Sedan Executivo com IA Preditiva",
+            categoria: "Elétricos",
+            imagem: "imgs/carro-oracle.png",
+            diaria: 490,
+            potencia: "680 CV",
+            aceleracao: "0-100 km/h em 2.9s",
+            combustivel: "100% Elétrico",
+            passageiros: "5 Lugares",
+            descricao: "Sofisticação máxima aliada ao sistema preditivo do Oráculo. Antecipa curvas e condições de tráfego antes mesmo que aconteçam, oferecendo silêncio absoluto e conforto de primeira classe."
+        },
+        {
+            id: 4,
+            nome: "Agent Smith Interceptor",
+            subtitulo: "Interceptor de Alta Perseguição",
+            categoria: "Esportivos",
+            imagem: "imgs/carro-smith.png",
+            diaria: 780,
+            potencia: "980 CV",
+            aceleracao: "0-100 km/h em 2.2s",
+            combustivel: "V8 Dual Turbo Hybrid",
+            passageiros: "2 Lugares",
+            descricao: "Desenhado para perseguição e máxima resposta em alta velocidade. Interior escuro com acabamento em couro sintético tático e suspensão adaptativa para manobras evasivas extremas."
+        },
+        {
+            id: 5,
+            nome: "Zion Off-Road Titan",
+            subtitulo: "Veículo Tático Reforçado",
+            categoria: "Blindados",
+            imagem: "imgs/carro-matrix.png",
+            diaria: 590,
+            potencia: "750 CV",
+            aceleracao: "0-100 km/h em 4.1s",
+            combustivel: "Diesel / Célula de Hidrogênio",
+            passageiros: "5 Lugares",
+            descricao: "Projetado para resistir a qualquer ambiente hostil e terrenos acidentados. Chassi de liga de titânio reforçado, pneus anti-furo com regeneração de pressão e comunicação direta com a central de Zion."
+        },
+        {
+            id: 6,
+            nome: "Cypher Roadster EV",
+            subtitulo: "Conversível Futurista Cyberpunk",
+            categoria: "Elétricos",
+            imagem: "imgs/carro-nebuchadnezzar.png",
+            diaria: 520,
+            potencia: "620 CV",
+            aceleracao: "0-100 km/h em 2.7s",
+            combustivel: "100% Elétrico",
+            passageiros: "2 Lugares",
+            descricao: "Experimente a sensação da brisa simulada com o conversível elétrico mais estiloso do sistema. Painel holográfico totalmente digital, luzes sob o chassi em neon verde e sistema de som 3D espacial."
+        }
+    ];
+
+    let categoriaAtual = 'Todos';
+
+    window.onload = function() {
+        atualizarHeaderAuth();
+        renderizarCatalogo();
+    };
+
+    function atualizarHeaderAuth() {
+        const credenciais = localStorage.getItem('matrix_auth');
+        const authBtn = document.getElementById('navAuthBtn');
+        if (credenciais) {
+            authBtn.textContent = 'Sair';
+            authBtn.onclick = function() {
+                localStorage.removeItem('matrix_auth');
+                alert('Você desconectou da Matrix.');
+                window.location.reload();
+            };
+        } else {
+            authBtn.textContent = 'Login';
+            authBtn.onclick = function() {
+                window.location.href = 'login.html';
+            };
+        }
+    }
+
+    function handleAuthNav() {
+        const credenciais = localStorage.getItem('matrix_auth');
+        if (credenciais) {
+            localStorage.removeItem('matrix_auth');
+            alert('Sessão encerrada.');
+            window.location.reload();
+        } else {
+            window.location.href = 'login.html';
+        }
+    }
+
+    function setCategory(cat, btn) {
+        categoriaAtual = cat;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderizarCatalogo();
+    }
+
+    function filtrarVeiculos() {
+        renderizarCatalogo();
+    }
+
+    function renderizarCatalogo() {
+        const grid = document.getElementById('catalogGrid');
+        const termoBusca = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        const veiculosFiltrados = veiculos.filter(v => {
+            const bateCategoria = categoriaAtual === 'Todos' || v.categoria === categoriaAtual;
+            const bateBusca = v.nome.toLowerCase().includes(termoBusca) ||
+                              v.subtitulo.toLowerCase().includes(termoBusca) ||
+                              v.categoria.toLowerCase().includes(termoBusca) ||
+                              v.combustivel.toLowerCase().includes(termoBusca) ||
+                              v.potencia.toLowerCase().includes(termoBusca);
+            return bateCategoria && bateBusca;
+        });
+
+        if (veiculosFiltrados.length === 0) {
+            grid.innerHTML = `
+                <div class="no-results">
+                    <ion-icon name="alert-circle-outline"></ion-icon>
+                    <p>Nenhum veículo encontrado no sistema da Matrix para esta busca.</p>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = veiculosFiltrados.map(v => `
+            <div class="vehicle-card">
+                <div class="card-image-wrapper">
+                    <img src="${v.imagem}" alt="${v.nome}">
+                    <span class="category-tag">${v.categoria}</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="vehicle-title">${v.nome}</h3>
+                    <p class="vehicle-subtitle">${v.subtitulo}</p>
+
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <ion-icon name="speedometer-outline"></ion-icon>
+                            <span>${v.aceleracao}</span>
+                        </div>
+                        <div class="spec-item">
+                            <ion-icon name="flash-outline"></ion-icon>
+                            <span>${v.potencia}</span>
+                        </div>
+                        <div class="spec-item">
+                            <ion-icon name="car-outline"></ion-icon>
+                            <span>${v.combustivel}</span>
+                        </div>
+                        <div class="spec-item">
+                            <ion-icon name="people-outline"></ion-icon>
+                            <span>${v.passageiros}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="price-container">
+                            <span class="price-amount">R$ ${v.diaria}</span>
+                            <span class="price-period">/ por dia</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-card-details" onclick="abrirModal(${v.id})">Detalhes</button>
+                            <button class="btn-card-rent" onclick="reservarDireto(${v.id})">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function abrirModal(id) {
+        const v = veiculos.find(item => item.id === id);
+        if (!v) return;
+
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = `
+            <img src="${v.imagem}" class="modal-vehicle-img" alt="${v.nome}">
+            <div>
+                <h2 class="modal-title">${v.nome}</h2>
+                <p style="color: #00ff22; font-weight: 600; margin-bottom: 10px;">${v.subtitulo} &bull; <span style="color:#aaa;">${v.categoria}</span></p>
+                <p class="modal-desc">${v.descricao}</p>
+            </div>
+
+            <div class="modal-specs-list">
+                <div class="modal-spec-box">
+                    <span class="label">Potência Total</span>
+                    <span class="value">${v.potencia}</span>
+                </div>
+                <div class="modal-spec-box">
+                    <span class="label">Aceleração</span>
+                    <span class="value">${v.aceleracao}</span>
+                </div>
+                <div class="modal-spec-box">
+                    <span class="label">Sistema de Propulsão</span>
+                    <span class="value">${v.combustivel}</span>
+                </div>
+                <div class="modal-spec-box">
+                    <span class="label">Capacidade</span>
+                    <span class="value">${v.passageiros}</span>
+                </div>
+            </div>
+
+            <div class="modal-rent-calculator">
+                <h4 style="color: #00ff22; margin-bottom: 5px;">Simulador de Locação</h4>
+                <div class="calc-row">
+                    <span>Quantidade de dias:</span>
+                    <input type="number" id="modalDias" class="calc-input" value="1" min="1" max="30" onchange="atualizarPrecoTotal(${v.diaria})" oninput="atualizarPrecoTotal(${v.diaria})">
+                </div>
+                <div class="calc-row" style="border-top: 1px dashed rgba(0, 143, 17, 0.4); padding-top: 10px; margin-top: 5px;">
+                    <span style="font-weight: 600;">Valor Total Estimado:</span>
+                    <span id="modalTotal" style="font-size: 1.5em; font-weight: 800; color: #00ff22;">R$ ${v.diaria}</span>
+                </div>
+                <button class="btn" style="margin-top: 10px;" onclick="confirmarReserva('${v.nome}')">Confirmar Reserva na Matrix</button>
+            </div>
+        `;
+
+        document.getElementById('vehicleModal').classList.add('active');
+    }
+
+    function fecharModal() {
+        document.getElementById('vehicleModal').classList.remove('active');
+    }
+
+    function atualizarPrecoTotal(diaria) {
+        const diasInput = document.getElementById('modalDias');
+        let dias = parseInt(diasInput.value) || 1;
+        if (dias < 1) dias = 1;
+        const total = dias * diaria;
+        document.getElementById('modalTotal').textContent = `R$ ${total}`;
+    }
+
+    function reservarDireto(id) {
+        const v = veiculos.find(item => item.id === id);
+        if (v) abrirModal(v.id);
+    }
+
+    function confirmarReserva(nomeVeiculo) {
+        const credenciais = localStorage.getItem('matrix_auth');
+        const dias = document.getElementById('modalDias').value;
+        const total = document.getElementById('modalTotal').textContent;
+
+        if (!credenciais) {
+            alert("Acesso restrito! Você precisa estar logado na Matrix para concluir a reserva.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        alert(`Solicitação de Reserva Confirmada!\n\nVeículo: ${nomeVeiculo}\nPeríodo: ${dias} dia(s)\nValor: ${total}\n\nO Operador da Matrix entrará em contato em instantes.`);
+        fecharModal();
+    }
+</script>
+</body>
+</html>
